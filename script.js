@@ -21,11 +21,17 @@ const nsteps = 1;
 let u = new Array(n).fill().map(() => new Array(m).fill(1));
 let v = new Array(n).fill().map(() => new Array(m).fill(0));
 
-for (let i = 0; i < 1; i++) {
-   const randx = ~~(Math.random() * gridSize);
-   const randy = ~~(Math.random() * gridSize);
-   v[randx][randy] = 0.5;
+
+function gerarRandom(arr=v, quantidade, value=0.7 ){
+   for (let i = 0; i < quantidade; i++) {
+      const randx = ~~(Math.random() * gridSize);
+      const randy = ~~(Math.random() * gridSize);
+      console.log(randx, randy, value)
+      arr[randx][randy] = value;
+   }
+
 }
+gerarRandom(v, 10)
 
 function laplacian(matrix, nn = n, mm = m) {
    let lap = new Array(nn).fill().map(() => new Array(mm).fill(0));
@@ -38,9 +44,9 @@ function laplacian(matrix, nn = n, mm = m) {
             matrix[i - 1][j] +
             matrix[i][j + 1] +
             matrix[i][j - 1] -
-            0.8 * matrix[i][j];
+            4 * matrix[i][j];
 
-         lap[i][j] = soma === 0 ? 0 : soma;
+         lap[i][j] = soma === 0 ? 0 :   soma;
       }
    }
 
@@ -101,11 +107,17 @@ function drawit(imgData, substancia, substancia2) {
 }
 
 const fps = 24;
-const stopon = 426;
+const stopon = 126;
 let frame = 0;
 function loop() {
+   // if(frame % 24 === 0){
+   //    gerarRandom(lastV, 10, 30)   
+   //    console.log("gerarRandom(10)")
+   // }
+
    drawit(imgData, lastU, lastV);
    frame++;
+   
    document.querySelector("#frame").innerText = `Frame: ${frame}`
    setTimeout(() => {
       if (frame < stopon) {
