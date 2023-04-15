@@ -30,6 +30,21 @@ function gerarGraficos() {
       },
    ];
 
+   var datacolor = [
+      {
+         z: dataccolor,
+         type: "surface",
+         contours: {
+            z: {
+               show: true,
+               usecolormap: true,
+               highlightcolor: "#42f462",
+               project: { z: true },
+            },
+         },
+      },
+   ]
+
    var layoutOriginal = {
       title: "Dv",
       autosize: false,
@@ -56,8 +71,22 @@ function gerarGraficos() {
       },
    };
 
+   var layoutColor = {
+      title: "color",
+      autosize: false,
+      width: sizew,
+      height: sizew,
+      margin: {
+         l: 65,
+         r: 50,
+         b: 65,
+         t: 90,
+      },
+   };
+
    Plotly.newPlot("original", dataoriginal, layoutOriginal);
    Plotly.newPlot("laplaciano", data, layout);
+   Plotly.newPlot("color", datacolor, layoutColor);
 
 
    

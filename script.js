@@ -18,15 +18,16 @@ const m = gridSize;
 const nsteps = 1;
 
 // Inicializando as matrizes u e v
-let u = new Array(n).fill().map(() => new Array(m).fill(1));
-let v = new Array(n).fill().map(() => new Array(m).fill(0));
+let u = new Array(n).fill(1).map(() => new Array(m).fill(1));
+let v = new Array(n).fill(0).map(() => new Array(m).fill(0));
+
+let dataccolor = new Array(n).fill(0).map(() => new Array(m).fill(0));
 
 
 function gerarRandom(arr=v, quantidade, value=0.7 ){
    for (let i = 0; i < quantidade; i++) {
       const randx = ~~(Math.random() * gridSize);
       const randy = ~~(Math.random() * gridSize);
-      console.log(randx, randy, value)
       arr[randx][randy] = value;
    }
 
@@ -78,8 +79,12 @@ function drawit(imgData, substancia, substancia2) {
             var oldU = lastU[i][j]
             var oldV = lastV[i][j]
 
-            const novou = oldU + (Du * novovU[i][j] - oldU * oldV * oldV + f0 * (1 - oldU)) * dt
-            const novov = oldV + (Dv * novovV[i][j] + oldU * oldV * oldV - ( k0 + f0 ) * oldV) * dt
+            const Reacao = oldU * Math.pow(oldV, 2)
+
+            // console.log(Reacao)
+
+            const novou = oldU + (Du * novovU[i][j] - Reacao + f0 * (1 - oldU)) * dt
+            const novov = oldV + (Dv * novovV[i][j] + Reacao - ( k0 + f0 ) * oldV) * dt
 
             lastU[i][j] = constrain(novou, 0, 1)
             lastV[i][j] = constrain(novov, 0, 1)
@@ -95,13 +100,28 @@ function drawit(imgData, substancia, substancia2) {
       const pou = fnpowU(index);
       const pov = fnpowV(index);
 
-    
-      var d = ~~((pov - pou) * 255)
+      
+      // o problema aqui é o seguinte
+      // quando pov for maior que pou deve mostrar a cor de pov
+      // o de cima vale a mesma coisa
+      // caso o resultado for zera que são as beradas da reação deve mostrar o fundo
+      let sub1color = 0
+      let sub2color = 0
+      if(pov > pou){
+         sub1color = ~~(pov * 255)
+      }
+      if(pou > pov){
+         sub2color = ~~(pou * 255)
+      }
+      // console.log(sub1color, sub2color)
+      // var d = ~~(((pov - pou) + 1) * 127.5)
+      imgData.data[i + 0] = sub1color;
+      imgData.data[i + 1] = sub2color;
+      imgData.data[i + 2] = 0;
+      imgData.data[i + 3] = 255;
 
-      imgData.data[i + 0] = 80;
-      imgData.data[i + 1] = d * 255;
-      imgData.data[i + 2] =  d * -255;
-      imgData.data[i + 3] = 155;
+      dataccolor[~~(index / gridSize)][index % gridSize] = sub1color - sub2color
+      
    }
    ctx.putImageData(imgData, 0, 0);
 }
@@ -119,12 +139,12 @@ function loop() {
    frame++;
    
    document.querySelector("#frame").innerText = `Frame: ${frame}`
-   setTimeout(() => {
-      if (frame < stopon) {
-         requestAnimationFrame(loop);
-         // frame++;
-      }
-   }, 1000 / fps);
+   // setTimeout(() => {
+   //    if (frame < stopon) {
+   //       requestAnimationFrame(loop);
+   //       // frame++;
+   //    }
+   // }, 1000 / fps);
 }
 
 loop();
