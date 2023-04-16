@@ -19,7 +19,7 @@ const nsteps = 1;
 
 // Inicializando as matrizes u e v
 let u = new Array(n).fill(1).map(() => new Array(m).fill(1));
-let v = new Array(n).fill(0).map(() => new Array(m).fill(0));
+let v = new Array(n).fill(0).map(() => new Array(m).fill(0.1));
 
 let dataccolor = new Array(n).fill(0).map(() => new Array(m).fill(0));
 
@@ -35,7 +35,7 @@ function gerarRandom(arr=v, quantidade, value=0.7 ){
 gerarRandom(v, 10)
 
 function laplacian(matrix, nn = n, mm = m) {
-   let lap = new Array(nn).fill().map(() => new Array(mm).fill(0));
+   let lap = new Array(nn).fill(0).map(() => new Array(mm).fill(0));
    const supressor = 1;
    let soma = 0;
    for (let i = 1; i < nn - 1; i++) {
